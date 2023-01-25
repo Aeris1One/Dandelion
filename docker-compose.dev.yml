@@ -1,0 +1,53 @@
+version: '3'
+
+# Dandelion
+services:
+  dandelion:
+    build: .
+    volumes:
+      - ./data/dandelion:/app/data:rw
+    container_name: dandelion
+    restart: always
+    networks:
+      - dandelion
+    depends_on:
+      mysql:
+        condition: service_healthy
+    environment:
+      - DATABASE_USER=dandelion
+      - DATABASE_NAME=dandelion
+      - DATABASE_PASSWORD=password
+      - DATABASE_HOST=mysql
+      - DATABASE_PORT=3306
+      - DISCORD_BOT_TOKEN=${DISCORD_BOT_TOKEN}
+      - DISCORD_APPLICATION_ID=${DISCORD_APPLICATION_ID}
+      - DISCORD_OWNER_ID=${DISCORD_OWNER_ID}
+      - DISCORD_MAIN_GUILD_ID=${DISCORD_MAIN_GUILD_ID}
+      - DISCORD_STATUS_CHANNEL_ID=${DISCORD_STATUS_CHANNEL_ID}
+      - ENVIRONMENT=debug
+
+# MySQL
+  mysql:
+    image: mysql:8
+    container_name: mysql
+    restart: always
+    networks:
+      - dandelion
+    volumes:
+      - ./data/mysql:/var/lib/mysql:rw
+    ports:
+      - "3306:3306"
+    environment:
+      - MYSQL_DATABASE=dandelion
+      - MYSQL_USER=dandelion
+      - MYSQL_PASSWORD=password
+      - TZ=Europe/Paris
+      - MYSQL_RANDOM_ROOT_PASSWORD=yes
+    healthcheck:
+      test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
+      interval: 5s
+      timeout: 10s
+
+networks:
+  dandelion:
+    driver: bridge
