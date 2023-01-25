@@ -19,6 +19,7 @@ services:
       - DATABASE_PASSWORD=password
       - DATABASE_HOST=mysql
       - DATABASE_PORT=3306
+      - DATABASE_SSL=False
       - DISCORD_BOT_TOKEN=your-bot-token
       - DISCORD_APPLICATION_ID=your-application-id
       - DISCORD_OWNER_ID=your-discord-user-id

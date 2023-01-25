@@ -22,6 +22,7 @@ config_variables = {
     "database_password": "DATABASE_PASSWORD",
     "database_host": "DATABASE_HOST",
     "database_port": "DATABASE_PORT",
+    "database_ssl": "DATABASE_SSL",
     "environment": "ENVIRONMENT"
 }
 
