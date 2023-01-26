@@ -45,5 +45,5 @@ class BaseModel(peewee.Model):
 
 
 class Avatar(BaseModel):
-    user_id = peewee.IntegerField()
+    user_id = peewee.BigIntegerField()
     avatar = peewee.BlobField()
