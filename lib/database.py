@@ -22,7 +22,7 @@ if config.get("database_ssl") == "True":
                                       port=int(config.get("database_port")),
                                       ssl_ca="/app/data/ca.pem",
                                       max_allowed_packet=1024 * 1024 * 64,  # 64MB
-                                      field_types={'blob': 'LONGBLOB'}
+                                      field_types={'BLOB': 'LONGBLOB'}
                                       )
             logger.info("Connecté à la base de données (SSL activé).")
         except peewee.OperationalError:
@@ -38,7 +38,7 @@ else:
                                   host=config.get("database_host"),
                                   port=int(config.get("database_port")),
                                   max_allowed_packet=1024 * 1024 * 64,  # 64MB
-                                  field_types={'blob': 'LONGBLOB'}
+                                  field_types={'BLOB': 'LONGBLOB'}
                                   )
         logger.info("Connecté à la base de données (SSL désactivé).")
     except peewee.OperationalError:
