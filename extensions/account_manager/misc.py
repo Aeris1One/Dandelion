@@ -10,6 +10,7 @@ import discord
 import lib.visuals as visuals
 import lib.avatars as avatars
 import extensions.account_manager.main_menu.main as main_menu
+import extensions.account_manager.main_menu.confirm as confirm
 
 
 async def timeout_message(interaction: discord.Interaction):
@@ -31,7 +32,7 @@ async def do_nothing(interaction: discord.Interaction):
 
 
 async def delete_avatar(interaction: discord.Interaction):
-    action, interaction = await main_menu.confirm(interaction)
+    action, interaction = await confirm.confirm(interaction)
     if action == "timeout":
         await timeout_message(interaction)
     elif not bool(action):

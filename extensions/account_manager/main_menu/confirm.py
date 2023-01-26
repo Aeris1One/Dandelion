@@ -31,13 +31,13 @@ class Confirmation(discord.ui.View):
 
 async def confirm(interaction: discord.Interaction):
     view = Confirmation()
-    await interaction.response.edit_message(file=visuals.generate_bubble_with_avatar("happy",
+    await interaction.response.edit_message(attachments=[visuals.generate_bubble_with_avatar("happy",
                                                                                      "Tu as déjà un avatar, que "
                                                                                      "veux-tu faire ?\nUtilises "
                                                                                      "les boutons pour faire ton "
                                                                                      "choix !",
-                                                                                     interaction.user.id),
-                                            view=view, ephemeral=True)
+                                                                                     interaction.user.id)],
+                                            view=view)
     await view.wait()
     if view.action is None:
         return 'timeout', interaction

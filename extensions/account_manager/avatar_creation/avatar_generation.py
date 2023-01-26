@@ -42,6 +42,8 @@ async def generate_avatar(interaction: discord.Interaction, skin, ensemble, skir
         accessories = []
     saved_accessories = accessories
     while not confirmed:
+        if avatars.user_has_avatar(interaction.user.id):
+            avatars.delete_avatar(interaction.user.id)
         accessories = saved_accessories
 
         if 'lipstick' in accessories:
