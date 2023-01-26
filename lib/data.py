@@ -8,6 +8,7 @@ de la licence CeCILL diffusée sur le site "http://www.cecill.info".
 """
 import os.path
 import requests
+import logging
 
 data_structure = [
     "downloaded_data",
@@ -24,6 +25,7 @@ downloadable_data = {
     "fonts/QuickSand-Medium.ttf": "https://forge.aeris-one.fr/Dandelion/Data/raw/branch/main/Quicksand-Medium.ttf"
 }
 
+logger = logging.getLogger("libs.data")
 
 def check_sprites():
     """
@@ -44,6 +46,7 @@ def create_data_structure():
     for folder in data_structure:
         if not os.path.exists(f"/app/data/{folder}"):
             os.mkdir(f"/app/data/{folder}")
+            logger.debug(f"Création du dossier /app/data/{folder}")
 
 
 def clear_tmp():
@@ -52,6 +55,7 @@ def clear_tmp():
     """
     for file in os.listdir("/app/data/tmp"):
         os.remove(f"/app/data/tmp/{file}")
+        logger.debug(f"Suppression du fichier /app/data/tmp/{file}")
 
 
 def download_data():
@@ -61,6 +65,7 @@ def download_data():
     for file, url in downloadable_data.items():
         with open(f"/app/data/downloaded_data/{file}", "wb") as f:
             f.write(requests.get(url).content)
+            logger.debug(f"Téléchargement du fichier /app/data/downloaded_data/{file}")
 
 
 def correct_sprites_filenames():
@@ -72,6 +77,7 @@ def correct_sprites_filenames():
             for file in os.listdir(f"/app/data/sprites/{directory}"):
                 if " ." in file:
                     os.rename(f"/app/data/sprites/{directory}/{file}", f"/app/data/sprites/{directory}/{file.replace(' .', '.')}")
+                    logger.debug(f"Renommage du fichier /app/data/sprites/{directory}/{file} en /app/data/sprites/{directory}/{file.replace(' .', '.')}")
 
     # Renommer data/sprites/eyes/blush_all.png en blush.png
     if os.path.exists("/app/data/sprites/eyes/blush_all.png"):
@@ -79,3 +85,4 @@ def correct_sprites_filenames():
             "/app/data/sprites/eyes/blush_all.png",
             "/app/data/sprites/eyes/blush.png"
         )
+        logger.debug("Renommage du fichier /app/data/sprites/eyes/blush_all.png en /app/data/sprites/eyes/blush.png")

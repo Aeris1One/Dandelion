@@ -17,6 +17,7 @@ import lib.config as config
 import lib.data as data
 from lib.bot import DandelionClient
 from lib.database import initialise_db
+from lib.monitoring import init_prometheus, commands_ran
 
 
 def main():
@@ -79,6 +80,10 @@ def main():
                 logger.info(f"Extension {extension} : OK")
             except Exception as e:
                 logger.error(f"Extension {extension}: {e}")
+
+    # On initialise Prometheus
+    logger.info("Initialisation de Prometheus")
+    init_prometheus()
 
     # On lance le bot
     logger.info("Lancement du bot")

@@ -14,28 +14,41 @@ import lib.config as config
 logger = logging.getLogger("libs.database")
 if config.get("database_ssl") == "True":
     if os.path.exists("/app/data/ca.pem"):
+        try:
+            db = peewee.MySQLDatabase(config.get("database_name"),
+                                      user=config.get("database_user"),
+                                      password=config.get("database_password"),
+                                      host=config.get("database_host"),
+                                      port=int(config.get("database_port")),
+                                      ssl_ca="/app/data/ca.pem",
+                                      max_allowed_packet=1024 * 1024 * 64,  # 64MB
+                                      field_types={'blob': 'LONGBLOB'}
+                                      )
+            logger.info("Connecté à la base de données (SSL activé).")
+        except peewee.OperationalError:
+            logger.critical("Impossible de se connecter à la base de données.")
+            quit()
+    else:
+        logger.critical("Le fichier clé de l'autorité de certification SSL n'a pas été trouvé.")
+else:
+    try:
         db = peewee.MySQLDatabase(config.get("database_name"),
                                   user=config.get("database_user"),
                                   password=config.get("database_password"),
                                   host=config.get("database_host"),
                                   port=int(config.get("database_port")),
-                                  ssl_ca="/app/data/ca.pem",
-                                  max_packet_size=1024 * 1024 * 64  # 64MB
+                                  max_allowed_packet=1024 * 1024 * 64,  # 64MB
+                                  field_types={'blob': 'LONGBLOB'}
                                   )
-    else:
-        logger.critical("Le fichier clé de l'autorité de certification SSL n'a pas été trouvé.")
-else:
-    db = peewee.MySQLDatabase(config.get("database_name"),
-                              user=config.get("database_user"),
-                              password=config.get("database_password"),
-                              host=config.get("database_host"),
-                              port=int(config.get("database_port")),
-                              max_packet_size=1024 * 1024 * 64  # 64MB
-                              )
+        logger.info("Connecté à la base de données (SSL désactivé).")
+    except peewee.OperationalError:
+        logger.critical("Impossible de se connecter à la base de données.")
+        quit()
 
 
 def initialise_db():
     db.connect()
+    logger.info("Création des tables manquantes dans la base de données.")
     db.create_tables([Avatar])
 
 
