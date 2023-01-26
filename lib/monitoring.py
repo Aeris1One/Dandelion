@@ -27,6 +27,3 @@ errors = prometheus_client.Counter(
 
 def init_prometheus():
     prometheus_client.start_http_server(8000)
-
-    commands_ran.labels("init").inc()  # Incrémenter un label pour initialiser le compteur
-    errors.labels("init", "init").inc()  # Idem
