@@ -46,7 +46,7 @@ def generate_bubble(emoticon: str, text: str, cache: bool = True) -> discord.Fil
     if cache and os.path.exists(f"/app/data/cache/bubbles/{hash(emoticon)}-{hash(text)}.gif"):
         output = discord.File(f"/app/data/cache/bubbles/{hash(emoticon)}-{hash(text)}.gif")
 
-    # Sinon on le génère
+    # Sinon, on le génère
     else:
         # Ouvrir l'arrière-plan
         bubble_back = Image.open("/app/data/downloaded_data/sprites/bubble_back.png")
@@ -57,7 +57,7 @@ def generate_bubble(emoticon: str, text: str, cache: bool = True) -> discord.Fil
         emoticon_sprite = emoticon_sprite.resize((96, 96), Image.NEAREST)
 
         # Ouvrir la police d'écriture
-        font = ImageFont.truetype("/app/data/downloaded_data/fonts/Quicksand-Medium.ttf", 18)
+        font = ImageFont.truetype("/app/data/downloaded_data/fonts/QuickSand-Medium.ttf", 18)
 
         # Générer les bulles
         bubbles = []
@@ -114,7 +114,7 @@ def generate_bubble_with_avatar(emoticon: str, text: str, userid: int) -> discor
     emoticon_sprite = emoticon_sprite.resize((96, 96), Image.NEAREST)
 
     # Ouvrir la police
-    font = ImageFont.truetype("/app/data/downloaded_data/fonts/Quicksand-Medium.ttf", 18)
+    font = ImageFont.truetype("/app/data/downloaded_data/fonts/QuickSand-Medium.ttf", 18)
 
     # Ouvrir l'avatar
     avatar = avatars.retrieve_avatar_sprite(userid)
