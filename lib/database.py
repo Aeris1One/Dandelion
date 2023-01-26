@@ -9,28 +9,29 @@ de la licence CeCILL diffusée sur le site "http://www.cecill.info".
 import os.path
 import logging
 import peewee
-from playhouse.mysql_ext import MySQLConnectorDatabase
 import lib.config as config
 
 logger = logging.getLogger("libs.database")
 if config.get("database_ssl") == "True":
     if os.path.exists("/app/data/ca.pem"):
-        db = MySQLConnectorDatabase(config.get("database_name"),
-                                    user=config.get("database_user"),
-                                    password=config.get("database_password"),
-                                    host=config.get("database_host"),
-                                    port=int(config.get("database_port")),
-                                    ssl_ca="/app/data/ca.pem"
-                                    )
+        db = peewee.MySQLDatabase(config.get("database_name"),
+                                  user=config.get("database_user"),
+                                  password=config.get("database_password"),
+                                  host=config.get("database_host"),
+                                  port=int(config.get("database_port")),
+                                  ssl_ca="/app/data/ca.pem",
+                                  max_packet_size=1024 * 1024 * 64  # 64MB
+                                  )
     else:
         logger.critical("Le fichier clé de l'autorité de certification SSL n'a pas été trouvé.")
 else:
-    db = MySQLConnectorDatabase(config.get("database_name"),
-                                user=config.get("database_user"),
-                                password=config.get("database_password"),
-                                host=config.get("database_host"),
-                                port=int(config.get("database_port"))
-                                )
+    db = peewee.MySQLDatabase(config.get("database_name"),
+                              user=config.get("database_user"),
+                              password=config.get("database_password"),
+                              host=config.get("database_host"),
+                              port=int(config.get("database_port")),
+                              max_packet_size=1024 * 1024 * 64  # 64MB
+                              )
 
 
 def initialise_db():
