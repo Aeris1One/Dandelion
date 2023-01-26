@@ -20,11 +20,13 @@ class Confirmation(discord.ui.View):
     async def change_avatar(self, interaction: discord.Interaction, button: discord.ui.Button):
         self.action = True
         self.interaction = interaction
+        self.stop()
 
     @discord.ui.button(emoji="⬛", label='Annuler', style=discord.ButtonStyle.grey, disabled=False)
     async def do_nothing(self, interaction: discord.Interaction, button: discord.ui.Button):
         self.action = False
         self.interaction = interaction
+        self.stop()
 
 
 async def confirm(interaction: discord.Interaction):

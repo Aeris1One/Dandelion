@@ -13,7 +13,7 @@ import random
 import lib.avatars as avatars
 import lib.visuals as visuals
 
-from extensions.account_manager.main_menu.confirm import Confirmation
+from extensions.account_manager.avatar_creation.views.confirm import Confirmation
 from extensions.account_manager.misc import timeout_message
 
 
