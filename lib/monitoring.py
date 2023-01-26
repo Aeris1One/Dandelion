@@ -8,19 +8,18 @@ de la licence CeCILL diffusée sur le site "http://www.cecill.info".
 """
 import prometheus_client
 
-
 # Définir les métriques
 #
 # Nombre de commandes exécutées depuis le démarrage du bot
 commands_ran = prometheus_client.Counter(
-    "commands_ran",
+    "dandelion_commands_ran",
     "Nombre de commandes exécutées",
     ["command"]
 )
 
 # Nombre d'erreurs depuis le démarrage du bot
 errors = prometheus_client.Counter(
-    "exception",
+    "dandelion_exceptions",
     "Nombre d'erreurs",
     ["exception", "method"]
 )
@@ -28,3 +27,6 @@ errors = prometheus_client.Counter(
 
 def init_prometheus():
     prometheus_client.start_http_server(8000)
+
+    commands_ran.labels("init").inc()  # Incrémenter un label pour initialiser le compteur
+    errors.labels("init", "init").inc()  # Idem
