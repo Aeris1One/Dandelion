@@ -65,7 +65,7 @@ async def menu(interaction: discord.Interaction) -> tuple[str, Interaction]:
                                                                                          "veux-tu faire ?\nUtilises "
                                                                                          "les boutons pour faire ton "
                                                                                          "choix !",
-                                                                                         interaction.user.id),
+                                                                                         userid=interaction.user.id),
                                                 view=view, ephemeral=True)
     else:
         view = MenuNoAvatarView()

@@ -6,12 +6,17 @@ respectant les principes de diffusion des logiciels libres. Vous pouvez
 utiliser, modifier et/ou redistribuer ce programme sous les conditions
 de la licence CeCILL diffusée sur le site "http://www.cecill.info".
 """
+import logging
+
+import PIL
 from PIL import Image, ImageDraw, ImageFont
 import lib.avatars as avatars
 import discord
 import random
 import os
 import numpy as np
+
+logger = logging.getLogger("lib.visuals")
 
 emoticons_coord = {
     "unimpressed": (0, 0),
@@ -95,11 +100,12 @@ def generate_bubble(emoticon: str, text: str, cache: bool = True) -> discord.Fil
     return output
 
 
-def generate_bubble_with_avatar(emoticon: str, text: str, userid: int) -> discord.File:
+def generate_bubble_with_avatar(emoticon: str, text: str, *, image: PIL.Image=None, userid: int=None) -> discord.File:
     """
     Génère une bulle de dialogue avec l'émoticône spécifié, le texte spécifié et l'avatar de l'utilisateur spécifié
     en animation de marche
 
+    :param image:
     :param emoticon:
     :param text:
     :param userid:
@@ -117,7 +123,12 @@ def generate_bubble_with_avatar(emoticon: str, text: str, userid: int) -> discor
     font = ImageFont.truetype("/app/data/downloaded_data/fonts/QuickSand-Medium.ttf", 18)
 
     # Ouvrir l'avatar
-    avatar = avatars.retrieve_avatar_sprite(userid)
+    if image is not None:
+        avatar = image
+    elif userid is not None:
+        avatar = avatars.retrieve_avatar(userid)
+    else:
+        logging.error("generate_bubble_with_avatar: ni image ni userid n'a été spécifié")
 
     # Générer les bulles
     bubbles = []

@@ -36,7 +36,7 @@ async def confirm(interaction: discord.Interaction):
                                                                                      "veux-tu faire ?\nUtilises "
                                                                                      "les boutons pour faire ton "
                                                                                      "choix !",
-                                                                                     interaction.user.id)],
+                                                                                     userid=interaction.user.id)],
                                             view=view)
     await view.wait()
     if view.action is None:

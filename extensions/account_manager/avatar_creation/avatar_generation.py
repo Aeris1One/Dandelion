@@ -41,6 +41,7 @@ async def generate_avatar(interaction: discord.Interaction, skin, ensemble, skir
     if accessories is None:
         accessories = []
     saved_accessories = accessories
+    avatar = None
     while not confirmed:
         if avatars.user_has_avatar(interaction.user.id):
             avatars.delete_avatar(interaction.user.id)
@@ -84,8 +85,7 @@ async def generate_avatar(interaction: discord.Interaction, skin, ensemble, skir
             accessories.remove("hats")
             accessories.append(random.choices(["hat_cowboy", "hat_lucky"])[0])
 
-        avatars.create_avatar(
-            interaction.user.id,
+        avatar = avatars.create_avatar(
             skin,
             clothes,
             hairs,
@@ -103,7 +103,7 @@ async def generate_avatar(interaction: discord.Interaction, skin, ensemble, skir
                     "S'il ne te plaît pas, clique sur "
                     "\"Régénérer\"\nsinon, tu peux cliquer "
                     "sur \"Confirmer\"",
-                    interaction.user.id
+                    image=avatar
                 )
             ],
             view=view
@@ -116,12 +116,16 @@ async def generate_avatar(interaction: discord.Interaction, skin, ensemble, skir
         confirmed = view.action
         interaction = view.interaction
 
+    # Enregistrer l'avatar
+    avatars.save_avatar(interaction.user.id, avatar)
+
     await interaction.response.edit_message(
         attachments=[
-            visuals.generate_bubble(
-                "pleased",
-                "Et voila ! C'est tout pour moi !\n"
-                "N'hésite pas à gérer ton avatar avec '/avatar' !"
+            visuals.generate_bubble_with_avatar(
+                "happy",
+                "Ton avatar a bien été enregistré !\n\n"
+                "Tu peux le gérer en tapant '/avatar' !",
+                image=avatar
             )
         ],
         view=None
@@ -133,7 +137,7 @@ async def generate_avatar(interaction: discord.Interaction, skin, ensemble, skir
             visuals.generate_bubble_with_avatar(
                 "happy", f"{interaction.user.name} vient de créer son avatar !\n\n"
                          "Crée le tien avec '/avatar' !",
-                interaction.user.id
+                image=avatar
             )
         ],
     )

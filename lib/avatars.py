@@ -15,6 +15,7 @@ from PIL import Image
 
 from lib.database import Avatar
 
+
 # Fonction user_has_avatar
 # ---
 # Entrée :
@@ -55,11 +56,10 @@ def delete_avatar(userid: int):
 # - rouge à lèvre           (bool)
 # - blush                   (bool)
 # Sortie :
-# - None
+# - avatar                  (PIL.Image)
 # ---
 # Créer un avatar pour l'utilisateur spécifié
-def create_avatar(userid: int,
-                  skin_color: int,
+def create_avatar(skin_color: int,
                   clothes: list,
                   hair_type: str,
                   accessories: list,
@@ -118,23 +118,34 @@ def create_avatar(userid: int,
         avatar.paste(accessory_grid, (0, 0), accessory_grid)
 
     # Enregistrer l'avatar dans la base de données
+    return avatar
+
+
+# Fonction save_avatar
+# ---
+# Entrée :
+# - userid Discord          (int)
+# - avatar      (PIL.Image)
+# Sortie :
+# - None
+# ---
+# Enregistrer l'avatar de l'utilisateur dans la base de données
+def save_avatar(userid: int, avatar: Image):
+    # Enregistrer l'avatar de l'utilisateur dans la base de données
     avatar = Avatar(user_id=userid, avatar=avatar.tobytes())
     avatar.save()
 
 
-# Fonction retrieve_avatar_sprite
+# Fonction retrieve_avatar
 # ---
 # Entrée :
 # - userid Discord          (int)
-# - x position              (int)
-# - y position              (int)
 # Sortie :
-# - sprite de l'avatar      (PIL.Image)
+# - avatar      (PIL.Image)
 # ---
-# Récupérer le carré à la position x, y de l'avatar de l'utilisateur
-def retrieve_avatar_sprite(userid: int):
+# Récupérer l'avatar de l'utilisateur depuis la base de données
+def retrieve_avatar(userid: int):
     # Récupérer l'avatar de l'utilisateur dans la base de données
-    print(f'User {userid} has avatar: {user_has_avatar(userid)}')
     avatar = Avatar().get(Avatar.user_id == userid).avatar
     avatar = Image.frombytes("RGBA", (256, 1568), avatar)
 
