@@ -24,6 +24,21 @@ errors = prometheus_client.Counter(
     ["exception", "method"]
 )
 
+# Temps d'exécution des fonctions
+function_execution_time = prometheus_client.Summary(
+    "dandelion_function_execution_time",
+    "Temps d'exécution des fonctions",
+    ["function"]
+)
+
+
+# Nombre de messages reçus depuis le démarrage du bot
+messages_received = prometheus_client.Counter(
+    "dandelion_messages_received",
+    "Nombre de messages vus",
+    ["guild"]
+)
+
 
 def init_prometheus():
     prometheus_client.start_http_server(8000)
