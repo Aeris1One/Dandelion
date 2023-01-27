@@ -41,3 +41,12 @@ class DandelionClient(discord.Client):
             messages_received.labels(message.guild.name).inc()
         else:
             messages_received.labels('Messages privés').inc()
+
+
+    async def on_ready(self):
+        # On lance la fonction de démarrage
+        for guild in self.guilds:
+            messages_received.labels(guild.name).inc()
+        messages_received.labels('Messages privés').inc()
+        for command in self.tree.get_commands():
+            commands_ran.labels(command.name).inc()
