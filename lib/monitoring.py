@@ -7,7 +7,6 @@ utiliser, modifier et/ou redistribuer ce programme sous les conditions
 de la licence CeCILL diffusée sur le site "http://www.cecill.info".
 """
 import prometheus_client
-from lib.bot import DandelionClient
 
 # Définir les métriques
 #
@@ -42,10 +41,3 @@ messages_received = prometheus_client.Counter(
 
 def init_prometheus():
     prometheus_client.start_http_server(8000)
-
-
-def init_metrics(client: DandelionClient):
-    for guild in client.guilds:
-        messages_received.labels(guild.name).inc()
-    for command in client.tree.commands:
-        commands_ran.labels(command.name).inc()

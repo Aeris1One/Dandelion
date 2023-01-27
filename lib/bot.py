@@ -11,7 +11,7 @@ from discord import app_commands
 import sys
 import logging
 
-from lib.monitoring import commands_ran, errors, messages_received, init_metrics
+from lib.monitoring import commands_ran, errors, messages_received
 
 
 class DandelionClient(discord.Client):
@@ -41,4 +41,7 @@ class DandelionClient(discord.Client):
 
     async def on_ready(self):
         # On lance la fonction de démarrage
-        await init_metrics(self)
+        for guild in self.guilds:
+            messages_received.labels(guild.name).inc()
+        for command in self.tree.commands:
+            commands_ran.labels(command.name).inc()
