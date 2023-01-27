@@ -7,7 +7,7 @@ utiliser, modifier et/ou redistribuer ce programme sous les conditions
 de la licence CeCILL diffusée sur le site "http://www.cecill.info".
 """
 import prometheus_client
-from bot import DandelionClient
+from lib.bot import DandelionClient
 
 # Définir les métriques
 #
