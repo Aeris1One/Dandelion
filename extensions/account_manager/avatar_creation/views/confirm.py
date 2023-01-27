@@ -16,15 +16,21 @@ class Confirmation(discord.ui.View):
         self.action = None
         self.interaction = None
 
-    @discord.ui.button(emoji="♻️", label='Régénérer mon avatar', style=discord.ButtonStyle.blurple, disabled=False)
-    async def change_avatar(self, interaction: discord.Interaction, button: discord.ui.Button):
+    @discord.ui.button(emoji="♻️", label='Régénérer', style=discord.ButtonStyle.blurple, disabled=False)
+    async def regenerate(self, interaction: discord.Interaction, button: discord.ui.Button):
         self.action = False
         self.interaction = interaction
         self.stop()
 
     @discord.ui.button(emoji="✅", label='Valider', style=discord.ButtonStyle.green, disabled=False)
-    async def do_nothing(self, interaction: discord.Interaction, button: discord.ui.Button):
+    async def confirm(self, interaction: discord.Interaction, button: discord.ui.Button):
         self.action = True
+        self.interaction = interaction
+        self.stop()
+
+    @discord.ui.button(emoji="❎", label='Annuler', style=discord.ButtonStyle.red, disabled=False)
+    async def cancel(self, interaction: discord.Interaction, button: discord.ui.Button):
+        self.action = "cancel"
         self.interaction = interaction
         self.stop()
 

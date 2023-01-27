@@ -111,7 +111,18 @@ async def generate_avatar(interaction: discord.Interaction, skin, ensemble, skir
         await view.wait()
         if view.action is None:
             await timeout_message(interaction)
-            avatars.delete_avatar(interaction.user.id)
+            return
+        if view.action == "cancel":
+            await interaction.response.edit_message(
+                attachments=[
+                    visuals.generate_bubble(
+                        "sad",
+                        "Ton avatar n'a pas été enregistré !\n\n"
+                        "Tu peux le recréer en tapant '/avatar' !",
+                    )
+                ],
+                view=None
+            )
             return
         confirmed = view.action
         interaction = view.interaction
