@@ -37,11 +37,15 @@ class DandelionClient(discord.Client):
 
     async def on_message(self, message: discord.Message):
         # On incrémente le compteur de messages reçus
-        messages_received.labels(message.guild.name).inc()
+        if message.guild is not None:
+            messages_received.labels(message.guild.name).inc()
+        else:
+            messages_received.labels('Messages privés').inc()
 
     async def on_ready(self):
         # On lance la fonction de démarrage
         for guild in self.guilds:
             messages_received.labels(guild.name).inc()
-        for command in self.tree.commands:
+        messages_received.labels('Messages privés').inc()
+        for command in self.tree.get_commands():
             commands_ran.labels(command.name).inc()
