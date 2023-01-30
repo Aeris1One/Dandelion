@@ -1,5 +1,6 @@
 """
 Copyright © Aeris1One 2023 (Dandelion)
+Copyright © ascpial 2023 (Dandelion)
 
 Ce programme est régi par la licence CeCILL soumise au droit français et
 respectant les principes de diffusion des logiciels libres. Vous pouvez
@@ -17,6 +18,7 @@ import lib.config as config
 import lib.data as data
 from lib.bot import DandelionClient
 from lib.database import initialise_db
+from lib.extensions import available_namespaces
 from lib.monitoring import init_prometheus, commands_ran
 
 
@@ -74,13 +76,8 @@ def main():
 
     # On charge les extensions
     logger.info("Chargement des extensions")
-    for extension in os.listdir("/app/extensions/"):
-        if os.path.isdir("/app/extensions/" + extension) and extension[0] not in ["_", "."]:
-            try:
-                importlib.import_module(f"extensions.{extension}.main").main(client)
-                logger.info(f"Extension {extension} : OK")
-            except Exception as e:
-                logger.error(f"Extension {extension}: {e}")
+    for namespace in available_namespaces():
+        client.load_extension(namespace)
 
     # On initialise Prometheus
     logger.info("Initialisation de Prometheus")

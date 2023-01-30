@@ -1,3 +1,7 @@
 .env
 venv
 data
+
+__pycache__ # pour des tests uniquement, ne pas lancer le bot hors de docker
+
+.vscode

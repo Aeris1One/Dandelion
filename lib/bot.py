@@ -1,5 +1,6 @@
 """
 Copyright © Aeris1One 2023 (Dandelion)
+Copyright © ascpial 2023 (Dandelion)
 
 Ce programme est régi par la licence CeCILL soumise au droit français et
 respectant les principes de diffusion des logiciels libres. Vous pouvez
@@ -12,6 +13,7 @@ import sys
 import logging
 
 from lib.monitoring import commands_ran, errors, messages_received
+from lib.extensions import Extension
 
 logger = logging.getLogger("bot")
 
@@ -21,6 +23,7 @@ class DandelionClient(discord.Client):
         # On définit l'arbre de commandes
         self.tree = app_commands.CommandTree(self)
         self.config = {}
+        self.extensions: list[Extension] = []
 
     async def setup_hook(self):
         # On synchronise les commandes avec l'API
@@ -57,3 +60,16 @@ class DandelionClient(discord.Client):
             logger.debug("Initialisation du monitoring, incrémentation du compteur de commandes exécutées pour la "
                          "commande %s", command.name)
             commands_ran.labels(command.name).inc()
+
+    def load_extension(self, namespace: str) -> Extension:
+        """Charge une extension depuis le dossier par défaut.
+        
+        Attention ! Cette fonction n'est pas l'implémentation par défaut de
+        discord.py !
+        """
+        extension = Extension(namespace)
+        extension.load()
+
+        extension.register(self)
+
+        self.extensions.append(extension)
