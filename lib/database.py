@@ -9,17 +9,16 @@ de la licence CeCILL diffusée sur le site "http://www.cecill.info".
 import os.path
 import logging
 import peewee
-import lib.config as config
 
 logger = logging.getLogger("libs.database")
-if config.get("database_ssl") == "True":
+if os.environ.get("DATABASE_SSL") == "True":
     if os.path.exists("/app/data/ca.pem"):
         try:
-            db = peewee.MySQLDatabase(config.get("database_name"),
-                                      user=config.get("database_user"),
-                                      password=config.get("database_password"),
-                                      host=config.get("database_host"),
-                                      port=int(config.get("database_port")),
+            db = peewee.MySQLDatabase(os.environ.get("DATABASE_NAME"),
+                                      user=os.environ.get("DATABASE_USER"),
+                                      password=os.environ.get("DATABASE_PASSWORD"),
+                                      host=os.environ.get("DATABASE_HOST"),
+                                      port=int(os.environ.get("DATABASE_PORT")),
                                       ssl_ca="/app/data/ca.pem",
                                       max_allowed_packet=1024 * 1024 * 64,  # 64MB
                                       field_types={'BLOB': 'LONGBLOB'}
@@ -30,13 +29,14 @@ if config.get("database_ssl") == "True":
             quit()
     else:
         logger.critical("Le fichier clé de l'autorité de certification SSL n'a pas été trouvé.")
+        quit()
 else:
     try:
-        db = peewee.MySQLDatabase(config.get("database_name"),
-                                  user=config.get("database_user"),
-                                  password=config.get("database_password"),
-                                  host=config.get("database_host"),
-                                  port=int(config.get("database_port")),
+        db = peewee.MySQLDatabase(os.environ.get("DATABASE_NAME"),
+                                  user=os.environ.get("DATABASE_USER"),
+                                  password=os.environ.get("DATABASE_PASSWORD"),
+                                  host=os.environ.get("DATABASE_HOST"),
+                                  port=int(os.environ.get("DATABASE_PORT")),
                                   max_allowed_packet=1024 * 1024 * 64,  # 64MB
                                   field_types={'BLOB': 'LONGBLOB'}
                                   )
@@ -61,3 +61,8 @@ class BaseModel(peewee.Model):
 class Avatar(BaseModel):
     user_id = peewee.BigIntegerField()
     avatar = peewee.BlobField()
+
+
+class Config(BaseModel):
+    key = peewee.CharField()
+    value = peewee.CharField()
