@@ -14,27 +14,27 @@ logger = logging.getLogger("libs.database")
 if os.environ.get("DATABASE_SSL") == "True":
     if os.path.exists("/app/data/ca.pem"):
         db = peewee.MySQLDatabase(os.environ.get("DATABASE_NAME"),
-                                      user=os.environ.get("DATABASE_USER"),
-                                      password=os.environ.get("DATABASE_PASSWORD"),
-                                      host=os.environ.get("DATABASE_HOST"),
-                                      port=int(os.environ.get("DATABASE_PORT")),
-                                      ssl_ca="/app/data/ca.pem",
-                                      max_allowed_packet=1024 * 1024 * 64,  # 64MB
-                                      field_types={'BLOB': 'LONGBLOB'}
-                                      )
+                                  user=os.environ.get("DATABASE_USER"),
+                                  password=os.environ.get("DATABASE_PASSWORD"),
+                                  host=os.environ.get("DATABASE_HOST"),
+                                  port=int(os.environ.get("DATABASE_PORT")),
+                                  ssl_ca="/app/data/ca.pem",
+                                  max_allowed_packet=1024 * 1024 * 64,  # 64MB
+                                  field_types={'BLOB': 'LONGBLOB'}
+                                  )
         logger.info("Connection à la base de données (SSL activé).")
     else:
         logger.critical("Le fichier clé de l'autorité de certification SSL n'a pas été trouvé.")
         quit()
 else:
     db = peewee.MySQLDatabase(os.environ.get("DATABASE_NAME"),
-                                  user=os.environ.get("DATABASE_USER"),
-                                  password=os.environ.get("DATABASE_PASSWORD"),
-                                  host=os.environ.get("DATABASE_HOST"),
-                                  port=int(os.environ.get("DATABASE_PORT")),
-                                  max_allowed_packet=1024 * 1024 * 64,  # 64MB
-                                  field_types={'BLOB': 'LONGBLOB'}
-                                  )
+                              user=os.environ.get("DATABASE_USER"),
+                              password=os.environ.get("DATABASE_PASSWORD"),
+                              host=os.environ.get("DATABASE_HOST"),
+                              port=int(os.environ.get("DATABASE_PORT")),
+                              max_allowed_packet=1024 * 1024 * 64,  # 64MB
+                              field_types={'BLOB': 'LONGBLOB'}
+                              )
     logger.info("Connection à la base de données (SSL désactivé).")
 
 
