@@ -46,9 +46,11 @@ def generate_bubble(emoticon: str, text: str, cache: bool = True) -> discord.Fil
     :param cache:
     :return:
     """
+    logger.debug(f"Génération d'une bulle avec l'icone '{emoticon}' et le texte '{text}'")
     # Si le fichier existe déjà en cache, on le renvoie
     # On vérifie que le texte est toujours le même
     if cache and os.path.exists(f"/app/data/cache/bubbles/{hash(emoticon)}-{hash(text)}.gif"):
+        logger.debug("La bulle est déjà en cache, renvoi du fichier")
         output = discord.File(f"/app/data/cache/bubbles/{hash(emoticon)}-{hash(text)}.gif")
 
     # Sinon, on le génère
@@ -81,20 +83,26 @@ def generate_bubble(emoticon: str, text: str, cache: bool = True) -> discord.Fil
         # Sauvegarder la bulle
         # Dans le cache si c'est demandé
         if cache:
+            logger.debug("Sauvegarde de la bulle dans le cache")
             bubbles[0].save(f"/app/data/cache/bubbles/{hash(emoticon)}-{hash(text)}.gif",
                             save_all=True, append_images=bubbles[1:],
                             optimize=False, duration=100, loop=0)
+            logger.debug("Sauvegarde terminée, renvoi du fichier")
             output = discord.File(f"/app/data/cache/bubbles/{hash(emoticon)}-{hash(text)}.gif")
 
         # Sinon dans le dossier temporaire et on le supprime après
         else:
             # Générer un ID aléatoire pour éviter les conflits de fichiers
             random_tmp = random.randint(0, 1024)
+            logger.debug(f"Sauvegarde de la bulle dans le dossier temporaire avec l'ID {random_tmp}")
             bubbles[0].save(f'/app/data/tmp/bubbles-{hash(emoticon)}-{hash(text)}-{random_tmp}.gif',
                             save_all=True, append_images=bubbles[1:],
                             optimize=False, duration=100, loop=0)
+            logger.debug("Sauvegarde terminée, renvoi du fichier")
             output = discord.File(f'/app/data/tmp/bubbles-{hash(emoticon)}-{hash(text)}-{random_tmp}.gif')
+            logger.debug("Suppression du fichier temporaire")
             os.remove(f'/app/data/tmp/bubbles-{hash(emoticon)}-{hash(text)}-{random_tmp}.gif')
+            logger.debug("Suppression terminée")
 
     # Renvoyer le fichier
     return output
@@ -111,6 +119,8 @@ def generate_bubble_with_avatar(emoticon: str, text: str, *, image: PIL.Image=No
     :param userid:
     :return:
     """
+    logger.debug(f"Génération d'une bulle avec l'icone '{emoticon}', le texte '{text}' et l'avatar de l'utilisateur")
+
     # Ouvrir l'arrière-plan
     bubble_back = Image.open(f"/app/data/downloaded_data/sprites/bubble_with_frame.png")
     bubble_back = bubble_back.resize((512, 576), Image.NEAREST)
@@ -126,6 +136,7 @@ def generate_bubble_with_avatar(emoticon: str, text: str, *, image: PIL.Image=No
     if image is not None:
         avatar = image
     elif userid is not None:
+        logger.debug(f"Récupération de l'avatar de l'utilisateur {userid} depuis la base de données")
         avatar = avatars.retrieve_avatar(userid)
     else:
         logging.error("generate_bubble_with_avatar: ni image ni userid n'a été spécifié")
@@ -157,11 +168,15 @@ def generate_bubble_with_avatar(emoticon: str, text: str, *, image: PIL.Image=No
     # On ne cache pas les bulles avec avatar, parce qu'elles sont très souvent uniques et les
     # stocker prendrait de la place
     random_tmp = random.randint(0, 1024)
+    logger.debug(f"Sauvegarde de la bulle dans le dossier temporaire avec l'ID {random_tmp}")
     bubbles[0].save(f'/app/data/tmp/bubbles-{hash(emoticon)}-{hash(text)}-{random_tmp}.gif',
                     save_all=True, append_images=bubbles[1:],
                     optimize=False, duration=130, loop=0)
+    logger.debug("Sauvegarde terminée, renvoi du fichier")
     output = discord.File(f'/app/data/tmp/bubbles-{hash(emoticon)}-{hash(text)}-{random_tmp}.gif')
+    logger.debug("Suppression du fichier temporaire")
     os.remove(f'/app/data/tmp/bubbles-{hash(emoticon)}-{hash(text)}-{random_tmp}.gif')
+    logger.debug("Suppression terminée")
 
     # Renvoyer le fichier
     return output
@@ -175,8 +190,12 @@ def retrieve_emoticon_sprite(coords: tuple):
     :return: Image
     """
 
+    # Logs
+    logger.debug(f"Récupération du sprite de l'emoticône aux coordonnées {coords}")
+
     # Récupérer les coordonnées
     x, y = coords
+
     # Ouvrir la grille
     emoticon = Image.open(f"data/sprites/emoticons.png")
 

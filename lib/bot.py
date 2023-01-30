@@ -13,6 +13,7 @@ import logging
 
 from lib.monitoring import commands_ran, errors, messages_received
 
+logger = logging.getLogger("bot")
 
 class DandelionClient(discord.Client):
     def __init__(self, *, intents: discord.Intents):
@@ -38,15 +39,21 @@ class DandelionClient(discord.Client):
     async def on_message(self, message: discord.Message):
         # On incrémente le compteur de messages reçus
         if message.guild is not None:
+            logger.debug("Message reçu sur le serveur %s, incrémentation du compteur de messages reçus", message.guild.name)
             messages_received.labels(message.guild.name).inc()
         else:
+            logger.debug("Message privé reçu, incrémentation du compteur de messages privés")
             messages_received.labels('Messages privés').inc()
-
 
     async def on_ready(self):
         # On lance la fonction de démarrage
         for guild in self.guilds:
+            logger.debug("Initialisation du monitoring, incrémentation du compteur de messages reçus pour le serveur %s",
+                         guild.name)
             messages_received.labels(guild.name).inc()
+        logger.debug("Initialisation du monitoring, incrémentation du compteur de messages privés")
         messages_received.labels('Messages privés').inc()
         for command in self.tree.get_commands():
+            logger.debug("Initialisation du monitoring, incrémentation du compteur de commandes exécutées pour la "
+                         "commande %s", command.name)
             commands_ran.labels(command.name).inc()

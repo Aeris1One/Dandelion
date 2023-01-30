@@ -30,6 +30,7 @@ def main():
         logger.setLevel(logging.INFO)
     else:
         logger.setLevel(logging.DEBUG)
+        # Les logs de discord sont trop verbeux, même en débug
         logging.getLogger('discord.gateway').setLevel(logging.INFO)
         logging.getLogger('discord.http').setLevel(logging.INFO)
 

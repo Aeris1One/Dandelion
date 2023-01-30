@@ -7,6 +7,9 @@ utiliser, modifier et/ou redistribuer ce programme sous les conditions
 de la licence CeCILL diffusée sur le site "http://www.cecill.info".
 """
 import prometheus_client
+import logging
+
+logger = logging.getLogger("libs.monitoring")
 
 # Définir les métriques
 #
@@ -40,4 +43,8 @@ messages_received = prometheus_client.Counter(
 
 
 def init_prometheus():
+    """
+    Initialise le serveur Prometheus
+    """
     prometheus_client.start_http_server(8000)
+    logger.info("Prometheus démarré sur le port 8000")
