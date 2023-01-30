@@ -13,8 +13,7 @@ import peewee
 logger = logging.getLogger("libs.database")
 if os.environ.get("DATABASE_SSL") == "True":
     if os.path.exists("/app/data/ca.pem"):
-        try:
-            db = peewee.MySQLDatabase(os.environ.get("DATABASE_NAME"),
+        db = peewee.MySQLDatabase(os.environ.get("DATABASE_NAME"),
                                       user=os.environ.get("DATABASE_USER"),
                                       password=os.environ.get("DATABASE_PASSWORD"),
                                       host=os.environ.get("DATABASE_HOST"),
@@ -23,16 +22,12 @@ if os.environ.get("DATABASE_SSL") == "True":
                                       max_allowed_packet=1024 * 1024 * 64,  # 64MB
                                       field_types={'BLOB': 'LONGBLOB'}
                                       )
-            logger.info("Connecté à la base de données (SSL activé).")
-        except peewee.OperationalError:
-            logger.critical("Impossible de se connecter à la base de données.")
-            quit()
+        logger.info("Connection à la base de données (SSL activé).")
     else:
         logger.critical("Le fichier clé de l'autorité de certification SSL n'a pas été trouvé.")
         quit()
 else:
-    try:
-        db = peewee.MySQLDatabase(os.environ.get("DATABASE_NAME"),
+    db = peewee.MySQLDatabase(os.environ.get("DATABASE_NAME"),
                                   user=os.environ.get("DATABASE_USER"),
                                   password=os.environ.get("DATABASE_PASSWORD"),
                                   host=os.environ.get("DATABASE_HOST"),
@@ -40,16 +35,20 @@ else:
                                   max_allowed_packet=1024 * 1024 * 64,  # 64MB
                                   field_types={'BLOB': 'LONGBLOB'}
                                   )
-        logger.info("Connecté à la base de données (SSL désactivé).")
-    except peewee.OperationalError:
-        logger.critical("Impossible de se connecter à la base de données.")
-        quit()
+    logger.info("Connection à la base de données (SSL désactivé).")
 
 
 def initialise_db():
-    db.connect()
+    try:
+        db.connect()
+    except peewee.OperationalError:
+        logger.critical("Impossible de se connecter à la base de données.")
+        quit()
+    logger.info("Connecté à la base de données.")
     logger.info("Création des tables manquantes dans la base de données.")
     db.create_tables([Avatar])
+    logger.info("Création des tables terminée.")
+    logger.info("Initialisation de la base de données terminée.")
 
 
 class BaseModel(peewee.Model):
