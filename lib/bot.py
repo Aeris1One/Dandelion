@@ -13,7 +13,7 @@ import sys
 import logging
 
 from .monitoring import commands_ran, errors, messages_received
-from .extensions import Extension
+from .extensions import Extension, get_register_order
 from .database import create_tables
 
 logger = logging.getLogger("bot")
@@ -24,7 +24,7 @@ class DandelionClient(discord.Client):
         # On définit l'arbre de commandes
         self.tree = app_commands.CommandTree(self)
         self.config = {}
-        self.extensions: list[Extension] = []
+        self.extensions: dict[str,Extension] = {}
 
     async def setup_hook(self):
         # On synchronise les commandes avec l'API
@@ -63,16 +63,43 @@ class DandelionClient(discord.Client):
             commands_ran.labels(command.name).inc()
 
     def load_extension(self, namespace: str) -> Extension:
-        """Charge une extension depuis le dossier par défaut.
+        """Charge le module d'une extension.
+        N'enregistre pas l'extension auprès du client pour respecter les
+        dépendances.
         
         Attention ! Cette fonction n'est pas l'implémentation par défaut de
         discord.py !
         """
         extension = Extension(namespace)
         extension.load()
+        extension.load_api()
 
         create_tables(extension)
 
-        extension.register(self)
+        self.extensions[namespace] = extension
+    
+    def register_extensions(self):
+        """Enregistre les extensions chargées auprès du client en respectant
+        l'ordre des dépendances si possible.
+        """
 
-        self.extensions.append(extension)
+        ordered_extensions = get_register_order(self.extensions.values())
+
+        for extension in ordered_extensions:
+            extension.register(self)
+
+    def get_extension_api(self, namespace: str):
+        """Retourne l'API que l'extension expose aux autres extensions.
+        
+        Retourne `None` si l'extension n'a pas d'API chargée et lève une erreur
+        si l'extension n'existe pas ou n'est pas chargée.
+        """
+        if not namespace in self.extensions:
+            raise ValueError("L'extension n'existe pas ou n'est pas chargée")
+        
+        extension = self.extensions[namespace]
+
+        if not extension.api_loaded:
+            return None
+        else:
+            return extension.api

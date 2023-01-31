@@ -74,6 +74,8 @@ def main():
     logger.info("Chargement des extensions")
     for namespace in available_namespaces():
         client.load_extension(namespace)
+    
+    client.register_extensions()
 
     # On initialise Prometheus
     logger.info("Initialisation de Prometheus")
