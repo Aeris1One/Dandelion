@@ -12,8 +12,9 @@ from discord import app_commands
 import sys
 import logging
 
-from lib.monitoring import commands_ran, errors, messages_received
-from lib.extensions import Extension
+from .monitoring import commands_ran, errors, messages_received
+from .extensions import Extension
+from .database import create_tables
 
 logger = logging.getLogger("bot")
 
@@ -69,6 +70,8 @@ class DandelionClient(discord.Client):
         """
         extension = Extension(namespace)
         extension.load()
+
+        create_tables(extension)
 
         extension.register(self)
 

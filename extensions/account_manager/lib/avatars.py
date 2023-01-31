@@ -13,9 +13,9 @@ import logging
 import peewee
 from PIL import Image
 
-from lib.database import Avatar, db
+from .database import Avatar
 
-logger = logging.getLogger("libs.avatars")
+logger = logging.getLogger("account_manager.libs.avatars")
 
 
 # Fonction user_has_avatar

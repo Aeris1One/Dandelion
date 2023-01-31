@@ -133,3 +133,18 @@ class Extension:
         else:
             return []
 
+    @property
+    @extension_loaded_check
+    def db_objects(self) -> list[os.PathLike]:
+        """Retourne les objets de database utilisés par le plugin.
+        
+        Par défaut, retourne une liste vide.
+
+        Il faut que l'extension ai été chargée.
+        """
+
+        if hasattr(self.module, 'db_objects'):
+            return self.module.db_objects
+        else:
+            return []
+

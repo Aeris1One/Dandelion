@@ -50,10 +50,6 @@ def main():
     logger.addHandler(console_handler)
 
     # Gérer les données
-    if not data.check_sprites():
-        logger.critical("Les sprites ne sont pas présents, veuillez les télécharger.")
-        quit()
-
     logger.info("Création de la structure de données")
     data.create_data_structure()
 
@@ -62,9 +58,6 @@ def main():
 
     logger.info("Téléchargement des données nécessaires")
     data.download_data()
-
-    logger.info("Vérification des noms des fichiers des sprites")
-    data.correct_sprites_filenames()
 
     # On définit les intents nécessaires et le serveur mandataire
     intents = discord.Intents.default()
