@@ -1,5 +1,6 @@
 """
 Copyright © Aeris1One 2023 (Dandelion)
+Copyright © ascpial 2023 (Dandelion)
 
 Ce programme est régi par la licence CeCILL soumise au droit français et
 respectant les principes de diffusion des logiciels libres. Vous pouvez
@@ -18,7 +19,8 @@ config_variables = {
     "owner_id": "DISCORD_OWNER_ID",
     "main_guild_id": "DISCORD_MAIN_GUILD_ID",
     "status_channel_id": "DISCORD_STATUS_CHANNEL_ID",
-    "environment": "ENVIRONMENT"
+    "environment": "ENVIRONMENT",
+    "proxy": "PROXY",
 }
 
 
@@ -81,3 +83,14 @@ def delete(config):
     except database.peewee.DoesNotExist:
         logger.warning(f"La variable de configuration {config} devait être supprimée mais elle n'existe pas dans la "
                        f"base de données.")
+
+def get_proxy() -> dict[str, str] | None:
+    proxy = get('proxy')
+    
+    if proxy != "":
+        return {
+            "http": proxy,
+            "https": proxy,
+        }
+    else:
+        return None

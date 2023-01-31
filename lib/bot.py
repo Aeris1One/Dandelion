@@ -18,8 +18,8 @@ from lib.extensions import Extension
 logger = logging.getLogger("bot")
 
 class DandelionClient(discord.Client):
-    def __init__(self, *, intents: discord.Intents):
-        super().__init__(intents=intents)
+    def __init__(self, *, intents: discord.Intents, proxy: str = ""):
+        super().__init__(intents=intents, proxy=proxy)
         # On définit l'arbre de commandes
         self.tree = app_commands.CommandTree(self)
         self.config = {}

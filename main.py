@@ -66,9 +66,12 @@ def main():
     logger.info("Vérification des noms des fichiers des sprites")
     data.correct_sprites_filenames()
 
-    # On définit les intents nécessaires
+    # On définit les intents nécessaires et le serveur mandataire
     intents = discord.Intents.default()
-    client = DandelionClient(intents=intents)
+    client = DandelionClient(
+        intents=intents,
+        proxy=config.get("proxy"),
+    )
 
     # On initialise la base de données
     logger.info("Initialisation de la base de données")
