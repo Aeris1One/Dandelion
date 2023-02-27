@@ -13,7 +13,7 @@ import logging
 import peewee
 from PIL import Image
 
-from lib.database import Avatar, db
+from lib.database import Avatar, open_db, close_db
 
 logger = logging.getLogger("libs.avatars")
 
@@ -29,7 +29,9 @@ logger = logging.getLogger("libs.avatars")
 def user_has_avatar(userid: int) -> bool:
     logger.debug(f"Vérification de l'existence de l'avatar de l'utilisateur {userid}")
     try:
+        open_db()
         Avatar().get(Avatar.user_id == userid)
+        close_db()
         logger.debug(f"L'utilisateur {userid} a un avatar")
         return True
     except peewee.DoesNotExist:
@@ -153,8 +155,10 @@ def save_avatar(userid: int, avatar: Image):
     logger.debug(f"Enregistrement de l'avatar de l'utilisateur {userid} dans la base de données")
 
     # Enregistrer l'avatar de l'utilisateur dans la base de données
+    open_db()
     avatar = Avatar(user_id=userid, avatar=avatar.tobytes())
     avatar.save()
+    close_db()
 
 
 # Fonction retrieve_avatar
@@ -170,8 +174,10 @@ def retrieve_avatar(userid: int):
     logger.debug(f"Récupération de l'avatar de l'utilisateur {userid} depuis la base de données")
 
     # Récupérer l'avatar de l'utilisateur dans la base de données
+    open_db()
     avatar = Avatar().get(Avatar.user_id == userid).avatar
     avatar = Image.frombytes("RGBA", (256, 1568), avatar)
+    close_db()
 
     # Retourner le sprite
     return avatar

@@ -49,11 +49,25 @@ def initialise_db():
     except peewee.OperationalError:
         logger.critical("Impossible de se connecter à la base de données.")
         quit()
-    logger.info("Connecté à la base de données.")
+    logger.info("Connection initiale à la base de données réussie.")
     logger.info("Création des tables manquantes dans la base de données.")
     db.create_tables([Avatar, Config])
     logger.info("Création des tables terminée.")
     logger.info("Initialisation de la base de données terminée.")
+    db.close()
+
+
+def open_db():
+    try:
+        db.connect()
+    except peewee.OperationalError:
+        logger.critical("Impossible de se connecter à la base de données.")
+        quit()
+    logger.info("Connecté à la base de données.")
+
+def close_db():
+    db.close()
+    logger.info("Déconnecté de la base de données.")
 
 
 class BaseModel(peewee.Model):
