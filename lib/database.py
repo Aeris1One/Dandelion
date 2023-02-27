@@ -9,32 +9,37 @@ de la licence CeCILL diffusée sur le site "http://www.cecill.info".
 import os.path
 import logging
 import peewee
+import playhouse.pool
 
 logger = logging.getLogger("libs.database")
 if os.environ.get("DATABASE_SSL") == "True":
     if os.path.exists("/app/data/ca.pem"):
-        db = peewee.MySQLDatabase(os.environ.get("DATABASE_NAME"),
-                                  user=os.environ.get("DATABASE_USER"),
-                                  password=os.environ.get("DATABASE_PASSWORD"),
-                                  host=os.environ.get("DATABASE_HOST"),
-                                  port=int(os.environ.get("DATABASE_PORT")),
-                                  ssl_ca="/app/data/ca.pem",
-                                  max_allowed_packet=1024 * 1024 * 64,  # 64MB
-                                  field_types={'BLOB': 'LONGBLOB'}
-                                  )
+        db = playhouse.pool.MySQLDatabase(os.environ.get("DATABASE_NAME"),
+                                          user=os.environ.get("DATABASE_USER"),
+                                          password=os.environ.get("DATABASE_PASSWORD"),
+                                          host=os.environ.get("DATABASE_HOST"),
+                                          port=int(os.environ.get("DATABASE_PORT")),
+                                          ssl_ca="/app/data/ca.pem",
+                                          max_allowed_packet=1024 * 1024 * 64,  # 64MB
+                                          field_types={'BLOB': 'LONGBLOB'},
+                                          max_connections=32,
+                                          stale_timeout=300
+                                          )
         logger.info("Connection à la base de données (SSL activé).")
     else:
         logger.critical("Le fichier clé de l'autorité de certification SSL n'a pas été trouvé.")
         quit()
 else:
-    db = peewee.MySQLDatabase(os.environ.get("DATABASE_NAME"),
-                              user=os.environ.get("DATABASE_USER"),
-                              password=os.environ.get("DATABASE_PASSWORD"),
-                              host=os.environ.get("DATABASE_HOST"),
-                              port=int(os.environ.get("DATABASE_PORT")),
-                              max_allowed_packet=1024 * 1024 * 64,  # 64MB
-                              field_types={'BLOB': 'LONGBLOB'}
-                              )
+    db = playhouse.pool.PooledMySQLDatabase(os.environ.get("DATABASE_NAME"),
+                                            user=os.environ.get("DATABASE_USER"),
+                                            password=os.environ.get("DATABASE_PASSWORD"),
+                                            host=os.environ.get("DATABASE_HOST"),
+                                            port=int(os.environ.get("DATABASE_PORT")),
+                                            max_allowed_packet=1024 * 1024 * 64,  # 64MB
+                                            field_types={'BLOB': 'LONGBLOB'},
+                                            max_connections=32,
+                                            stale_timeout=300
+                                            )
     logger.info("Connection à la base de données (SSL désactivé).")
 
 
@@ -46,7 +51,7 @@ def initialise_db():
         quit()
     logger.info("Connecté à la base de données.")
     logger.info("Création des tables manquantes dans la base de données.")
-    db.create_tables([Avatar])
+    db.create_tables([Avatar, Config])
     logger.info("Création des tables terminée.")
     logger.info("Initialisation de la base de données terminée.")
 
