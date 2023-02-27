@@ -14,7 +14,7 @@ import playhouse.pool
 logger = logging.getLogger("libs.database")
 if os.environ.get("DATABASE_SSL") == "True":
     if os.path.exists("/app/data/ca.pem"):
-        db = playhouse.pool.MySQLDatabase(os.environ.get("DATABASE_NAME"),
+        db = playhouse.pool.PooledMySQLDatabase(os.environ.get("DATABASE_NAME"),
                                           user=os.environ.get("DATABASE_USER"),
                                           password=os.environ.get("DATABASE_PASSWORD"),
                                           host=os.environ.get("DATABASE_HOST"),
