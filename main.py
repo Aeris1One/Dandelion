@@ -1,5 +1,6 @@
 """
 Copyright © Aeris1One 2023 (Dandelion)
+Copyright © ascpial 2023 (Dandelion)
 
 Ce programme est régi par la licence CeCILL soumise au droit français et
 respectant les principes de diffusion des logiciels libres. Vous pouvez
@@ -17,6 +18,7 @@ import lib.config as config
 import lib.data as data
 from lib.bot import DandelionClient
 from lib.database import initialise_db
+from lib.extensions import available_namespaces
 from lib.monitoring import init_prometheus, commands_ran
 
 
@@ -48,10 +50,6 @@ def main():
     logger.addHandler(console_handler)
 
     # Gérer les données
-    if not data.check_sprites():
-        logger.critical("Les sprites ne sont pas présents, veuillez les télécharger.")
-        quit()
-
     logger.info("Création de la structure de données")
     data.create_data_structure()
 
@@ -61,12 +59,12 @@ def main():
     logger.info("Téléchargement des données nécessaires")
     data.download_data()
 
-    logger.info("Vérification des noms des fichiers des sprites")
-    data.correct_sprites_filenames()
-
-    # On définit les intents nécessaires
+    # On définit les intents nécessaires et le serveur mandataire
     intents = discord.Intents.default()
-    client = DandelionClient(intents=intents)
+    client = DandelionClient(
+        intents=intents,
+        proxy=config.get("proxy"),
+    )
 
     # On initialise la base de données
     logger.info("Initialisation de la base de données")
@@ -74,13 +72,10 @@ def main():
 
     # On charge les extensions
     logger.info("Chargement des extensions")
-    for extension in os.listdir("/app/extensions/"):
-        if os.path.isdir("/app/extensions/" + extension) and extension[0] not in ["_", "."]:
-            try:
-                importlib.import_module(f"extensions.{extension}.main").main(client)
-                logger.info(f"Extension {extension} : OK")
-            except Exception as e:
-                logger.error(f"Extension {extension}: {e}")
+    for namespace in available_namespaces():
+        client.load_extension(namespace)
+    
+    client.register_extensions()
 
     # On initialise Prometheus
     logger.info("Initialisation de Prometheus")

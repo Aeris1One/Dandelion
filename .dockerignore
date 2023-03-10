@@ -1,0 +1,5 @@
+# Évite des erreurs de permissions (mysql) et un trop gros transfert
+/data/
+
+# Évite un transfert trop long de données
+/venv/

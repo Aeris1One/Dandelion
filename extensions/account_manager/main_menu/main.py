@@ -9,8 +9,8 @@ de la licence CeCILL diffusée sur le site "http://www.cecill.info".
 import discord
 from discord import Interaction
 
-import lib.visuals as visuals
-import lib.avatars as avatars
+import extensions.account_manager.lib.visuals as visuals
+import extensions.account_manager.lib.avatars as avatars
 
 
 class MenuView(discord.ui.View):

@@ -10,13 +10,13 @@ import logging
 
 import PIL
 from PIL import Image, ImageDraw, ImageFont
-import lib.avatars as avatars
+import extensions.account_manager.lib.avatars as avatars
 import discord
 import random
 import os
 import numpy as np
 
-logger = logging.getLogger("lib.visuals")
+logger = logging.getLogger("account_manager.lib.visuals")
 
 emoticons_coord = {
     "unimpressed": (0, 0),

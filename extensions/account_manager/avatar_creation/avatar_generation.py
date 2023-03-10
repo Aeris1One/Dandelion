@@ -10,8 +10,8 @@ de la licence CeCILL diffusée sur le site "http://www.cecill.info".
 import discord
 import random
 
-import lib.avatars as avatars
-import lib.visuals as visuals
+import extensions.account_manager.lib.avatars as avatars
+import extensions.account_manager.lib.visuals as visuals
 
 from extensions.account_manager.avatar_creation.views.confirm import Confirmation
 from extensions.account_manager.misc import timeout_message

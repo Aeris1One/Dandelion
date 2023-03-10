@@ -25,6 +25,7 @@ services:
       - DISCORD_OWNER_ID=your-discord-user-id
       - DISCORD_MAIN_GUILD_ID=your-support-guild-id
       - DISCORD_STATUS_CHANNEL_ID=your-status-channel-id
+      - PROXY=your-proxy-here
       - ENVIRONMENT=production
 
 # MySQL
