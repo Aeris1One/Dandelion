@@ -7,12 +7,12 @@ utiliser, modifier et/ou redistribuer ce programme sous les conditions
 de la licence CeCILL diffusée sur le site "http://www.cecill.info".
 """
 
-import discord
 import random
+
+import discord
 
 import extensions.account_manager.lib.avatars as avatars
 import extensions.account_manager.lib.visuals as visuals
-
 from extensions.account_manager.avatar_creation.views.confirm import Confirmation
 from extensions.account_manager.misc import timeout_message
 

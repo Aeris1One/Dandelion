@@ -7,6 +7,7 @@ utiliser, modifier et/ou redistribuer ce programme sous les conditions
 de la licence CeCILL diffusée sur le site "http://www.cecill.info".
 """
 import discord
+
 import extensions.account_manager.lib.visuals as visuals
 
 

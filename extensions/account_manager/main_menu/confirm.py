@@ -7,6 +7,7 @@ utiliser, modifier et/ou redistribuer ce programme sous les conditions
 de la licence CeCILL diffusée sur le site "http://www.cecill.info".
 """
 import discord
+
 import extensions.account_manager.lib.visuals as visuals
 
 
@@ -32,14 +33,13 @@ class Confirmation(discord.ui.View):
 async def confirm(interaction: discord.Interaction):
     view = Confirmation()
     await interaction.response.edit_message(attachments=[visuals.generate_bubble_with_avatar("happy",
-                                                                                     "Tu as déjà un avatar, que "
-                                                                                     "veux-tu faire ?\nUtilises "
-                                                                                     "les boutons pour faire ton "
-                                                                                     "choix !",
-                                                                                     userid=interaction.user.id)],
+                                                                                             "Tu as déjà un avatar, que "
+                                                                                             "veux-tu faire ?\nUtilises "
+                                                                                             "les boutons pour faire ton "
+                                                                                             "choix !",
+                                                                                             userid=interaction.user.id)],
                                             view=view)
     await view.wait()
     if view.action is None:
         return 'timeout', interaction
     return view.action, view.interaction
-

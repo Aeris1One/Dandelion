@@ -7,9 +7,10 @@ utiliser, modifier et/ou redistribuer ce programme sous les conditions
 de la licence CeCILL diffusée sur le site "http://www.cecill.info".
 """
 
+import logging
 # Import modules
 import random
-import logging
+
 import peewee
 from PIL import Image
 

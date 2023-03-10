@@ -8,12 +8,12 @@ de la licence CeCILL diffusée sur le site "http://www.cecill.info".
 """
 import discord
 
+from extensions.account_manager.avatar_creation.avatar_generation import generate_avatar
 from extensions.account_manager.avatar_creation.views.accessories import accessories_stage
 from extensions.account_manager.avatar_creation.views.ensemble import ensemble_stage
 from extensions.account_manager.avatar_creation.views.hairs import hairs_stage
 from extensions.account_manager.avatar_creation.views.skin import skin_stage
 from extensions.account_manager.avatar_creation.views.skirt import skirt_stage
-from extensions.account_manager.avatar_creation.avatar_generation import generate_avatar
 from extensions.account_manager.misc import timeout_message
 
 
@@ -64,4 +64,3 @@ async def init_avatar_creation(interaction: discord.Interaction):
 
     # Créer l'avatar
     await generate_avatar(interaction, skin, ensemble, skirt, hairs, accessories)
-

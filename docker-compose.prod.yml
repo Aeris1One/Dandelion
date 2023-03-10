@@ -28,7 +28,7 @@ services:
       - PROXY=your-proxy-here
       - ENVIRONMENT=production
 
-# MySQL
+  # MySQL
   mysql:
     image: mysql:8
     container_name: mysql
@@ -46,7 +46,7 @@ services:
       - TZ=Europe/Paris
       - MYSQL_RANDOM_ROOT_PASSWORD=yes
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost" ]
       interval: 30s
       timeout: 10s
 

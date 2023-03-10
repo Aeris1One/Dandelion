@@ -20,16 +20,18 @@ __all__ = [
 
 EXTENSION_FOLDER = 'extensions'
 
+
 def extension_loaded_check(func):
     """Vérifie que l'extension est chargée et lève une erreur sinon."""
 
     def wrapper(self, *args, **kwargs):
         if not self.loaded:
             raise ValueError("L'extension n'a pas été chargée")
-        
+
         return func(self, *args, **kwargs)
-    
+
     return wrapper
+
 
 def available_namespaces() -> list[str]:
     """Retourne la liste des extensions disponibles dans le dossier par défaut.
@@ -37,17 +39,18 @@ def available_namespaces() -> list[str]:
     namespaces = []
 
     for namespace in os.listdir(EXTENSION_FOLDER):
-        if namespace.startswith(('.', '_')): # extension invalide ou désactivée
+        if namespace.startswith(('.', '_')):  # extension invalide ou désactivée
             continue
-        
+
         path = os.path.join(EXTENSION_FOLDER, namespace)
 
         if not os.path.isdir(path):
             continue
 
         namespaces.append(namespace)
-    
+
     return namespaces
+
 
 def get_register_order(extensions: list[Extension]) -> list[Extension]:
     """Retourne la liste des extensions en respectant les dépendances.
@@ -62,18 +65,19 @@ def get_register_order(extensions: list[Extension]) -> list[Extension]:
     sorted_extensions: list[Extension] = []
 
     for extension in extensions:
-        to_satisfy = extension.depends_on.copy() # liste des namespaces manquants
+        to_satisfy = extension.depends_on.copy()  # liste des namespaces manquants
 
         target_index = 0
         while len(to_satisfy) > 0 and target_index < len(sorted_extensions):
             if sorted_extensions[target_index].namespace in to_satisfy:
                 to_satisfy.remove(sorted_extensions[target_index].namespace)
-            
+
             target_index += 1
-        
+
         sorted_extensions.insert(target_index + 1, extension)
-    
+
     return sorted_extensions
+
 
 class Extension:
     """Classe utilisée pour gérer les extensions.
@@ -89,7 +93,7 @@ class Extension:
         self.module = None
         self.loaded = False
         self.api_loaded = False
-    
+
     def load(self):
         """Charge l'extension dans la mémoire.
 
@@ -109,7 +113,7 @@ class Extension:
 
         self.module = importlib.import_module(self.get_module_import())
         self.loaded = True
-    
+
     def load_api(self):
         """Charge l'API de l'extension dans la mémoire.
         
@@ -120,18 +124,18 @@ class Extension:
 
         if not os.path.exists(api_path):
             return False
-        
+
         self.api = importlib.import_module(self.get_module_import(api=True))
         self.api_loaded = True
         return True
 
     @extension_loaded_check
-    def register(self, client): # TODO: annotation de type
+    def register(self, client):  # TODO: annotation de type
         """Enregistre l'extension auprès du client passé en argument.
         
         Il faut que l'extension ai été chargée.
         """
-        
+
         self.module.main(client)
 
     def get_module_path(self, api: bool = False) -> os.PathLike:
@@ -143,9 +147,9 @@ class Extension:
             target = "main.py"
         else:
             target = "api.py"
-        
+
         return os.path.join(EXTENSION_FOLDER, self.namespace, target)
-    
+
     def get_module_import(self, api: bool = False) -> str:
         """Retourne la référence de module de l'extension.
 
@@ -157,9 +161,8 @@ class Extension:
             target = "main"
         else:
             target = "api"
-        
+
         return '.'.join([EXTENSION_FOLDER, self.namespace, target])
-    
 
     @property
     @extension_loaded_check
@@ -192,7 +195,7 @@ class Extension:
             return self.module.data_structure
         else:
             return []
-    
+
     @property
     @extension_loaded_check
     def downloadable_data(self) -> list[os.PathLike]:
@@ -222,4 +225,3 @@ class Extension:
             return self.module.db_objects
         else:
             return []
-

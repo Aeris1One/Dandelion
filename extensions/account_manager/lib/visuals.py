@@ -7,14 +7,15 @@ utiliser, modifier et/ou redistribuer ce programme sous les conditions
 de la licence CeCILL diffusée sur le site "http://www.cecill.info".
 """
 import logging
+import os
+import random
 
 import PIL
-from PIL import Image, ImageDraw, ImageFont
-import extensions.account_manager.lib.avatars as avatars
 import discord
-import random
-import os
 import numpy as np
+from PIL import Image, ImageDraw, ImageFont
+
+import extensions.account_manager.lib.avatars as avatars
 
 logger = logging.getLogger("account_manager.lib.visuals")
 
@@ -108,7 +109,8 @@ def generate_bubble(emoticon: str, text: str, cache: bool = True) -> discord.Fil
     return output
 
 
-def generate_bubble_with_avatar(emoticon: str, text: str, *, image: PIL.Image=None, userid: int=None) -> discord.File:
+def generate_bubble_with_avatar(emoticon: str, text: str, *, image: PIL.Image = None,
+                                userid: int = None) -> discord.File:
     """
     Génère une bulle de dialogue avec l'émoticône spécifié, le texte spécifié et l'avatar de l'utilisateur spécifié
     en animation de marche

@@ -7,19 +7,18 @@ respectant les principes de diffusion des logiciels libres. Vous pouvez
 utiliser, modifier et/ou redistribuer ce programme sous les conditions
 de la licence CeCILL diffusée sur le site "http://www.cecill.info".
 """
-import importlib
 import logging
 import logging.handlers
+import os
 
 import discord
-import os
 
 import lib.config as config
 import lib.data as data
 from lib.bot import DandelionClient
 from lib.database import initialise_db
 from lib.extensions import available_namespaces
-from lib.monitoring import init_prometheus, commands_ran
+from lib.monitoring import init_prometheus
 
 
 def main():
@@ -74,7 +73,7 @@ def main():
     logger.info("Chargement des extensions")
     for namespace in available_namespaces():
         client.load_extension(namespace)
-    
+
     client.register_extensions()
 
     # On initialise Prometheus

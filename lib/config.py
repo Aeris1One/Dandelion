@@ -9,6 +9,7 @@ de la licence CeCILL diffusée sur le site "http://www.cecill.info".
 """
 import logging
 import os
+
 import lib.database as database
 
 logger = logging.getLogger("libs.config")
@@ -84,9 +85,10 @@ def delete(config):
         logger.warning(f"La variable de configuration {config} devait être supprimée mais elle n'existe pas dans la "
                        f"base de données.")
 
+
 def get_proxy() -> dict[str, str] | None:
     proxy = get('proxy')
-    
+
     if proxy != "":
         return {
             "http": proxy,

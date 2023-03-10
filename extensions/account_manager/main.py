@@ -11,13 +11,13 @@ import logging
 import discord
 
 from lib.bot import DandelionClient
-
-from .main_menu       import main as main_menu
+from . import misc
 from .avatar_creation import main as avatar_creation
-from .                import misc
-from .lib             import database
+from .lib import database
+from .main_menu import main as main_menu
 
 logger = logging.getLogger('account_manager')
+
 
 @discord.app_commands.command(
     name="avatar",
@@ -36,14 +36,16 @@ async def avatar(interaction: discord.Interaction) -> None:
     else:
         await misc.error_message(interaction)
 
+
 def main(client: DandelionClient):
     if not misc.check_sprites():
         logger.critical("Les sprites ne sont pas présents, veuillez les télécharger.")
         quit()
-    
+
     logger.info("Vérification des noms des fichiers des sprites")
     misc.correct_sprites_filenames()
 
     client.tree.add_command(avatar)
+
 
 db_objects = database.objects

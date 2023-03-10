@@ -6,17 +6,17 @@ respectant les principes de diffusion des logiciels libres. Vous pouvez
 utiliser, modifier et/ou redistribuer ce programme sous les conditions
 de la licence CeCILL diffusée sur le site "http://www.cecill.info".
 """
-import os
 import logging
+import os
 
 import discord
 
-import extensions.account_manager.lib.visuals as visuals
 import extensions.account_manager.lib.avatars as avatars
-import extensions.account_manager.main_menu.main as main_menu
+import extensions.account_manager.lib.visuals as visuals
 import extensions.account_manager.main_menu.confirm as confirm
 
 logger = logging.getLogger("account_manager.misc")
+
 
 async def timeout_message(interaction: discord.Interaction):
     await interaction.edit_original_response(attachments=[visuals.generate_bubble("embarrassed",
@@ -57,12 +57,13 @@ async def delete_avatar(interaction: discord.Interaction):
 
 async def error_message(interaction: discord.Interaction):
     await interaction.response.edit_message(attachments=[visuals.generate_bubble("angry",
-                                                                                  "Une erreur est survenue !\n"
-                                                                                  "Veuillez contacter le "
-                                                                                  "support si cela se\n"
-                                                                                  "produit à nouveau !")],
-                                             view=None
-                                             )
+                                                                                 "Une erreur est survenue !\n"
+                                                                                 "Veuillez contacter le "
+                                                                                 "support si cela se\n"
+                                                                                 "produit à nouveau !")],
+                                            view=None
+                                            )
+
 
 def check_sprites():
     """
@@ -84,8 +85,10 @@ def correct_sprites_filenames():
         if os.path.isdir(f"/app/data/sprites/{directory}"):
             for file in os.listdir(f"/app/data/sprites/{directory}"):
                 if " ." in file:
-                    os.rename(f"/app/data/sprites/{directory}/{file}", f"/app/data/sprites/{directory}/{file.replace(' .', '.')}")
-                    logger.debug(f"Renommage du fichier /app/data/sprites/{directory}/{file} en /app/data/sprites/{directory}/{file.replace(' .', '.')}")
+                    os.rename(f"/app/data/sprites/{directory}/{file}",
+                              f"/app/data/sprites/{directory}/{file.replace(' .', '.')}")
+                    logger.debug(
+                        f"Renommage du fichier /app/data/sprites/{directory}/{file} en /app/data/sprites/{directory}/{file.replace(' .', '.')}")
 
     # Renommer data/sprites/eyes/blush_all.png en blush.png
     if os.path.exists("/app/data/sprites/eyes/blush_all.png"):
@@ -94,4 +97,3 @@ def correct_sprites_filenames():
             "/app/data/sprites/eyes/blush.png"
         )
         logger.debug("Renommage du fichier /app/data/sprites/eyes/blush_all.png en /app/data/sprites/eyes/blush.png")
-

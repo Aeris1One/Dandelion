@@ -9,8 +9,8 @@ de la licence CeCILL diffusée sur le site "http://www.cecill.info".
 import discord
 from discord import Interaction
 
-import extensions.account_manager.lib.visuals as visuals
 import extensions.account_manager.lib.avatars as avatars
+import extensions.account_manager.lib.visuals as visuals
 
 
 class MenuView(discord.ui.View):
@@ -78,4 +78,3 @@ async def menu(interaction: discord.Interaction) -> tuple[str, Interaction]:
     if view.action is None:
         return 'timeout', interaction
     return view.action, view.interaction
-

@@ -8,11 +8,12 @@ utiliser, modifier et/ou redistribuer ce programme sous les conditions
 de la licence CeCILL diffusée sur le site "http://www.cecill.info".
 """
 from __future__ import annotations
+
+import logging
+import os.path
 from typing import TYPE_CHECKING
 
-import os.path
 import requests
-import logging
 
 from .config import get_proxy
 
@@ -35,6 +36,7 @@ global_downloadable_data = {
 }
 
 logger = logging.getLogger("libs.data")
+
 
 def create_data_structure(extension: Extension = None):
     """

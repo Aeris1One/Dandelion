@@ -7,16 +7,18 @@ respectant les principes de diffusion des logiciels libres. Vous pouvez
 utiliser, modifier et/ou redistribuer ce programme sous les conditions
 de la licence CeCILL diffusée sur le site "http://www.cecill.info".
 """
+import logging
+import sys
+
 import discord
 from discord import app_commands
-import sys
-import logging
 
-from .monitoring import commands_ran, errors, messages_received
-from .extensions import Extension, get_register_order
 from .database import create_tables
+from .extensions import Extension, get_register_order
+from .monitoring import commands_ran, errors, messages_received
 
 logger = logging.getLogger("bot")
+
 
 class DandelionClient(discord.Client):
     def __init__(self, *, intents: discord.Intents, proxy: str = ""):
@@ -24,7 +26,7 @@ class DandelionClient(discord.Client):
         # On définit l'arbre de commandes
         self.tree = app_commands.CommandTree(self)
         self.config = {}
-        self.extensions: dict[str,Extension] = {}
+        self.extensions: dict[str, Extension] = {}
 
     async def setup_hook(self):
         # On synchronise les commandes avec l'API
@@ -43,7 +45,8 @@ class DandelionClient(discord.Client):
     async def on_message(self, message: discord.Message):
         # On incrémente le compteur de messages reçus
         if message.guild is not None:
-            logger.debug("Message reçu sur le serveur %s, incrémentation du compteur de messages reçus", message.guild.name)
+            logger.debug("Message reçu sur le serveur %s, incrémentation du compteur de messages reçus",
+                         message.guild.name)
             messages_received.labels(message.guild.name).inc()
         else:
             logger.debug("Message privé reçu, incrémentation du compteur de messages privés")
@@ -52,8 +55,9 @@ class DandelionClient(discord.Client):
     async def on_ready(self):
         # On lance la fonction de démarrage
         for guild in self.guilds:
-            logger.debug("Initialisation du monitoring, incrémentation du compteur de messages reçus pour le serveur %s",
-                         guild.name)
+            logger.debug(
+                "Initialisation du monitoring, incrémentation du compteur de messages reçus pour le serveur %s",
+                guild.name)
             messages_received.labels(guild.name).inc()
         logger.debug("Initialisation du monitoring, incrémentation du compteur de messages privés")
         messages_received.labels('Messages privés').inc()
@@ -77,7 +81,7 @@ class DandelionClient(discord.Client):
         create_tables(extension)
 
         self.extensions[namespace] = extension
-    
+
     def register_extensions(self):
         """Enregistre les extensions chargées auprès du client en respectant
         l'ordre des dépendances si possible.
@@ -96,7 +100,7 @@ class DandelionClient(discord.Client):
         """
         if not namespace in self.extensions:
             raise ValueError("L'extension n'existe pas ou n'est pas chargée")
-        
+
         extension = self.extensions[namespace]
 
         if not extension.api_loaded:

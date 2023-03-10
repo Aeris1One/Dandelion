@@ -11,9 +11,11 @@ import peewee
 
 from lib.database import BaseModel
 
+
 class Avatar(BaseModel):
     user_id = peewee.BigIntegerField()
     avatar = peewee.BlobField()
+
 
 objects = [
     Avatar,
